@@ -7,21 +7,43 @@
     android:id="@+id/PressureActivity"
     android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="wrap_content"
+    <TableLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Result :"
-        android:id="@+id/resultText1"
-        android:layout_weight="1"
-        android:visibility="gone" />
+        android:layout_weight="2.38"
+        android:id="@+id/tableData"
+        android:stretchColumns="1"
+        android:layout_centerHorizontal="true"
+        android:showDividers="middle|beginning|end">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/userInput"
-        android:layout_weight="1"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        <TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Room"
+                android:id="@+id/textRoom"
+                android:layout_column="0" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Pressure"
+                android:id="@+id/textPressure"
+                android:layout_column="1"
+                android:textAlignment="gravity"
+                android:gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Difference"
+                android:id="@+id/textDiff"
+                android:layout_column="2" />
+        </TableRow>
+    </TableLayout>
 
     <EditText
         android:layout_width="154dp"
