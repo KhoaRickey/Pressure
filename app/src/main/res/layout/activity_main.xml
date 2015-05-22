@@ -4,8 +4,14 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
-    android:id="@+id/PressureActivity"
-    android:orientation="vertical" >
+    android:id="@+id/PressureActivity" >
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
     <TableLayout
         android:layout_width="match_parent"
@@ -32,7 +38,6 @@
                 android:text="Pressure"
                 android:id="@+id/textPressure"
                 android:layout_column="1"
-                android:textAlignment="gravity"
                 android:gravity="center_horizontal" />
 
             <TextView
@@ -50,16 +55,33 @@
         android:layout_height="wrap_content"
         android:id="@+id/editText" />
 
-    <Button
-        android:layout_width="153dp"
-        android:layout_height="70dp"
-        android:text="Add"
-        android:id="@+id/add" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2.38"
+        android:weightSum="1">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="101dp"
+            android:text="Add"
+            android:id="@+id/add"
+            android:layout_weight="0.27" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="101dp"
+            android:text="Compare"
+            android:id="@+id/compare"
+            android:layout_weight="0.27" />
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/resultText" />
-
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
