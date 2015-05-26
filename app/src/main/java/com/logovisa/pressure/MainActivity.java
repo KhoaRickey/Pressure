@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -83,6 +84,15 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                 else compareValue.setText("Compare Value (" + input.getText() + ") : " + CurrentCompare);
                 updateCompare();
                 input.setText("");
+            }
+        });
+
+        //Save button handling
+        final Button saveButton = (Button)findViewById(R.id.save);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //ArrayAdapter<SavedData>  adapter = (ArrayAdapter<SavedData>)
             }
         });
     }
