@@ -21,6 +21,9 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,8 +31,9 @@ import java.util.Map;
 
 
 public class MainActivity extends ActionBarActivity implements SensorEventListener{
-    public float CurrentPressure;
-    public float CurrentCompare = 0;
+    public int CurrentPressure;
+    public int CurrentCompare = 0;
+    public int CalculatedPressure = 0;
     public int id = 0;
     public List idList = new ArrayList();
     public ArrayList<Float> calculateList = new ArrayList<>();
@@ -40,6 +44,11 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
+
+        //Tell user that average pressure is being calculated
+        TextView CalculatedResult = (TextView)findViewById(R.id.calculatedResult);
+        CalculatedResult.setText("Average Pressure is being calculated...");
+
         //Get the reference to the sensor manager
         sensorManager = (SensorManager) getSystemService(Service.SENSOR_SERVICE);
 
@@ -74,16 +83,21 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             public void onClick(View view) {
                 EditText input = (EditText)findViewById(R.id.editText);
                 TextView compareValue = (TextView)findViewById(R.id.compareValue);
-                CurrentCompare = CurrentPressure;
+                CurrentCompare = CalculatedPressure;
 
-                //If there is a string in input field, it will be updated next to the Compare Value. If there is none, it just update the compare value
-                String inputTxt = input.getText().toString();
-                String compare = compareValue.getText().toString();
-                String[] compareS = compare.split(":");
-                if(inputTxt.matches("")) compareValue.setText(compareS[0] + ": " + CurrentCompare);
-                else compareValue.setText("Compare Value (" + input.getText() + ") : " + CurrentCompare);
-                updateCompare();
-                input.setText("");
+                if(CurrentCompare == 0) compareValue.setText("Average Value is being calculated, please wait!");
+                else {
+                    //If there is a string in input field, it will be updated next to the Compare Value. If there is none, it just update the compare value
+                    String inputTxt = input.getText().toString();
+                    String compare = compareValue.getText().toString();
+                    String[] compareS = compare.split(":");
+                    if (inputTxt.matches(""))
+                        compareValue.setText(compareS[0] + ": " + CurrentCompare);
+                    else
+                        compareValue.setText("Compare Value (" + input.getText() + ") : " + CurrentCompare);
+                    updateCompare();
+                    input.setText("");
+                }
             }
         });
 
@@ -108,10 +122,10 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         //Convert float value to string with desired format
         //DecimalFormat df = new DecimalFormat("#.####");
         //String dx=df.format(values[0]);
-        CurrentPressure = values[0];
+        CurrentPressure = Math.round(values[0] * 100);
         TextView result = (TextView)findViewById(R.id.resultText);
         //Show current pressure value to user
-        result.setText("Current atmospheric pressure:   " + values[0] + " hPa");
+        result.setText("Current atmospheric pressure:   " + CurrentPressure + " Pa");
         calculateList.add(values[0]);
         if(calculateList.size() == 50){
             calculateAverage(calculateList);
@@ -187,10 +201,9 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             TextView comparePressure = (TextView)findViewById(idList.indexOf(i));
             TextView currentPressure = (TextView)findViewById(idList.indexOf(i) + 100);
             String current = currentPressure.getText().toString();
-            float currentP = Float.parseFloat(current);
-            float newCompare = CurrentPressure - currentP;
-            String newCompareTxt = Float.toString(-newCompare);
-            comparePressure.setText(newCompareTxt);
+            int currentP = Integer.parseInt(current);
+            int newCompare = CurrentPressure - currentP;
+            comparePressure.setText(-newCompare);
         }
     }
 
@@ -207,9 +220,10 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         for(int i = 0; i < calculateList.size(); i++){
             sum += calculateList.get(i);
         }
-        float average = sum / calculateList.size();
+        int average = Math.round((sum / calculateList.size()) * 100);
+        CalculatedPressure = average;
         TextView calculatedResult = (TextView)findViewById(R.id.calculatedResult);
-        calculatedResult.setText("Calculated atmospheric pressure:   " + average + " hPa");
+        calculatedResult.setText("Calculated atmospheric pressure:   " + average + " Pa");
     }
 
     //Create new table's row function
@@ -227,19 +241,17 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         TextView currentPressure = new TextView(getApplicationContext());
         currentPressure.setGravity(Gravity.CENTER_HORIZONTAL);
         currentPressure.setId(id + 100);
-        String cP = Float.toString(CurrentPressure);
-        currentPressure.setText(cP);
+        currentPressure.setText(CurrentPressure);
         row.addView(currentPressure);
 
         //compare Compare value with the room's value
         TextView comparePressure = new TextView(getApplicationContext());
         idList.add(id);
         comparePressure.setId(id);
-        float diff;
+        int diff;
         if(CurrentCompare == 0) diff = 0;
         else diff = CurrentCompare - CurrentPressure;
-        String diffString = Float.toString(-diff);
-        comparePressure.setText(diffString);
+        comparePressure.setText(-diff);
         row.addView(comparePressure);
 
         table.addView(row);
