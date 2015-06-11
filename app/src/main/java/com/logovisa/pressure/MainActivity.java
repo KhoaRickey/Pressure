@@ -4,6 +4,7 @@ package com.logovisa.pressure;
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -24,7 +25,10 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +67,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     System.exit(0);
                 }
             });
-            alert.create().show();
+            //alert.create().show();
         }
         sensorManager.registerListener((SensorEventListener) this, pS, sensorManager.SENSOR_DELAY_FASTEST );
 
@@ -102,11 +106,21 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         });
 
         //Save button handling
-        final Button saveButton = (Button)findViewById(R.id.save);
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        final Button save = (Button)findViewById(R.id.save);
+        save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //ArrayAdapter<SavedData>  adapter = (ArrayAdapter<SavedData>)
+                saveTable();
+            }
+        });
+
+        //Saved Room button handling
+        final Button showSave = (Button)findViewById(R.id.saveView);
+        showSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent act2 = new Intent(view.getContext(),SavedDataActivity.class);
+                startActivity(act2);
             }
         });
     }
@@ -198,8 +212,11 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     //Comparing functon and update the values
     void updateCompare(){
         for(int i = 0; i < idList.size(); i++){
-            TextView comparePressure = (TextView)findViewById(idList.indexOf(i));
-            TextView currentPressure = (TextView)findViewById(idList.indexOf(i) + 100);
+            //TextView comparePressure = (TextView)findViewById(idList.indexOf(i));
+            //TextView currentPressure = (TextView)findViewById(idList.indexOf(i) + 100);
+            TableRow row = (TableRow)findViewById(idList.indexOf(i));
+            TextView comparePressure = (TextView)row.getChildAt(2);
+            TextView currentPressure = (TextView)row.getChildAt(1);
             String current = currentPressure.getText().toString();
             int currentP = Integer.parseInt(current);
             int newCompare = CurrentPressure - currentP;
@@ -231,6 +248,8 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         EditText input = (EditText)findViewById(R.id.editText);
         TableLayout table = (TableLayout)findViewById(R.id.tableData);
         TableRow row = new TableRow(getApplicationContext());
+        row.setId(id);
+        idList.add(id);
 
         //update room name from input field
         TextView inputRoom = new TextView(getApplicationContext());
@@ -240,23 +259,45 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         //add current pressure of the room above
         TextView currentPressure = new TextView(getApplicationContext());
         currentPressure.setGravity(Gravity.CENTER_HORIZONTAL);
-        currentPressure.setId(id + 100);
-        currentPressure.setText(CurrentPressure);
+        currentPressure.setText("abc");
         row.addView(currentPressure);
 
         //compare Compare value with the room's value
         TextView comparePressure = new TextView(getApplicationContext());
-        idList.add(id);
-        comparePressure.setId(id);
         int diff;
         if(CurrentCompare == 0) diff = 0;
         else diff = CurrentCompare - CurrentPressure;
-        comparePressure.setText(-diff);
+        comparePressure.setText("bfdf");
         row.addView(comparePressure);
 
         table.addView(row);
         input.setText("");
         id++;
+    }
+
+    //Saving function handling
+    void saveTable(){
+        StringBuilder data = new StringBuilder();
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+        String currentDay = day + "/" + month + "/" + year;
+        for(int i = 0; i < idList.size(); i++) {
+            TableRow row = (TableRow)findViewById(idList.indexOf(i));
+            TextView room = (TextView)row.getChildAt(0);
+            TextView currentP = (TextView)row.getChildAt(1);
+            data.append(room.getText() + "\n");
+            data.append(currentP.getText() + "\n");
+        }
+        //data.append(currentDay);
+        try {
+            OutputStreamWriter outputFile = new OutputStreamWriter(openFileOutput("savePressure.txt",MODE_PRIVATE));
+            outputFile.write(data.toString());
+            outputFile.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //List device's sensor list function

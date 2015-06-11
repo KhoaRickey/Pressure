@@ -20,75 +20,81 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Compare value"
                 android:id="@+id/compareValue" />
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="2.38"
-        android:id="@+id/tableData"
-        android:stretchColumns="1"
-        android:layout_centerHorizontal="true"
-        android:showDividers="middle|beginning|end">
-
-        <TableRow>
-            <TextView
-                android:layout_width="wrap_content"
+            <TableLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Room"
-                android:id="@+id/textRoom"
-                android:layout_column="0" />
+                android:layout_weight="2.38"
+                android:id="@+id/tableData"
+                android:stretchColumns="1"
+                android:layout_centerHorizontal="true"
+                android:showDividers="middle|beginning|end">
 
-            <TextView
-                android:layout_width="wrap_content"
+                <TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Room"
+                        android:id="@+id/textRoom"
+                        android:layout_column="0" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Pressure"
+                        android:id="@+id/textPressure"
+                        android:layout_column="1"
+                        android:gravity="center_horizontal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Difference"
+                        android:id="@+id/textDiff"
+                        android:layout_column="2" />
+                </TableRow>
+            </TableLayout>
+
+            <EditText
+                android:layout_width="154dp"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Pressure"
-                android:id="@+id/textPressure"
-                android:layout_column="1"
-                android:gravity="center_horizontal" />
+                android:id="@+id/editText" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Difference"
-                android:id="@+id/textDiff"
-                android:layout_column="2" />
-        </TableRow>
-    </TableLayout>
+                android:layout_weight="2.38"
+                android:weightSum="1">
 
-    <EditText
-        android:layout_width="154dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/editText" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="101dp"
+                    android:text="Add"
+                    android:id="@+id/add"
+                    android:layout_weight="0.27" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="2.38"
-        android:weightSum="1">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="101dp"
-            android:text="Add"
-            android:id="@+id/add"
-            android:layout_weight="0.27" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="101dp"
-            android:text="Compare"
-            android:id="@+id/compare"
-            android:layout_weight="0.27" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="101dp"
-            android:text="Save"
-            android:id="@+id/save"
-            android:layout_weight="0.27" />
-    </LinearLayout>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="101dp"
+                    android:text="Compare"
+                    android:id="@+id/compare"
+                    android:layout_weight="0.27" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="101dp"
+                    android:text="Save"
+                    android:id="@+id/save"
+                    android:layout_weight="0.27" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="101dp"
+                    android:text="Saved Rooms"
+                    android:id="@+id/saveView"
+                    android:layout_weight="0.27" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
