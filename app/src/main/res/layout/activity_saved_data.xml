@@ -75,6 +75,12 @@
                     android:text="Compare"
                     android:id="@+id/compare"
                     android:layout_weight="0.27" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="101dp"
+                    android:text="Clear"
+                    android:id="@+id/clearsave"
+                    android:layout_weight="0.27" />
             </LinearLayout>
 
             <TextView

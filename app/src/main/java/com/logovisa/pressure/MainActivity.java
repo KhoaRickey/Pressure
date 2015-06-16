@@ -9,8 +9,10 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.nfc.Tag;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +27,15 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,7 +86,19 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                newRow();
+                if(CalculatedPressure == 0) {
+                    AlertDialog.Builder alertDlg = new AlertDialog.Builder(MainActivity.this);
+                    alertDlg.setCancelable(true);
+                    alertDlg.setMessage("Pressure is being calculated, please keep the phone stable and wait...");
+                    alertDlg.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // We do nothing
+                        }
+                    });
+                    alertDlg.create().show();
+                }
+                else newRow();
             }
         });
 
@@ -219,7 +241,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             TextView currentPressure = (TextView)row.getChildAt(1);
             String current = currentPressure.getText().toString();
             int currentP = Integer.parseInt(current);
-            int newCompare = CurrentPressure - currentP;
+            int newCompare = CurrentCompare - currentP;
             comparePressure.setText(-newCompare);
         }
     }
@@ -259,15 +281,15 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         //add current pressure of the room above
         TextView currentPressure = new TextView(getApplicationContext());
         currentPressure.setGravity(Gravity.CENTER_HORIZONTAL);
-        currentPressure.setText("abc");
+        currentPressure.setText(CalculatedPressure);
         row.addView(currentPressure);
 
         //compare Compare value with the room's value
         TextView comparePressure = new TextView(getApplicationContext());
         int diff;
         if(CurrentCompare == 0) diff = 0;
-        else diff = CurrentCompare - CurrentPressure;
-        comparePressure.setText("bfdf");
+        else diff = CurrentCompare - CalculatedPressure;
+        comparePressure.setText(-diff);
         row.addView(comparePressure);
 
         table.addView(row);
@@ -277,6 +299,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
     //Saving function handling
     void saveTable(){
+        File savePressure = new File("savePressure.txt");
         StringBuilder data = new StringBuilder();
         Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
@@ -290,11 +313,30 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             data.append(room.getText() + "\n");
             data.append(currentP.getText() + "\n");
         }
-        //data.append(currentDay);
+        data.append(currentDay + "\n");
+        data.append(" " + "\n");
         try {
-            OutputStreamWriter outputFile = new OutputStreamWriter(openFileOutput("savePressure.txt",MODE_PRIVATE));
-            outputFile.write(data.toString());
-            outputFile.close();
+                StringBuilder oldData = new StringBuilder();
+                try {
+                    InputStream inputStream = openFileInput("savePressure.txt");
+                    InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                    String receiveString = "";
+
+                    while ( (receiveString = bufferedReader.readLine()) != null ) {
+                        oldData.append(receiveString).append("\n");
+                    }
+
+                    inputStream.close();
+                }
+                catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                oldData.append(data);
+                OutputStreamWriter outputFile = new OutputStreamWriter(openFileOutput("savePressure.txt", MODE_PRIVATE));
+                outputFile.write(oldData.toString());
+                outputFile.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
