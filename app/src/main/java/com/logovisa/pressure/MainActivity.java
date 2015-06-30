@@ -47,12 +47,13 @@ import java.util.Map;
 public class MainActivity extends ActionBarActivity implements SensorEventListener{
     public int CurrentPressure;
     public int CurrentCompare = 0;
-    public int CalculatedPressure = 0;
+    public int CalculatedPressure;
     public int id = 0;
     public List idList = new ArrayList();
     public ArrayList<Float> calculateList = new ArrayList<>();
     public SensorManager sensorManager;
     public Sensor pS;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +62,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
         //Tell user that average pressure is being calculated
         TextView CalculatedResult = (TextView)findViewById(R.id.calculatedResult);
-        CalculatedResult.setText("Average Pressure is being calculated...");
+        CalculatedResult.setText(R.string.wait);
 
         //Get the reference to the sensor manager
         sensorManager = (SensorManager) getSystemService(Service.SENSOR_SERVICE);
@@ -70,14 +71,14 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         pS = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
         if(pS == null){
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.setMessage("Your device doesn't have barometer sensor");
+            alert.setMessage(R.string.noss);
             alert.setCancelable(false);
-            alert.setPositiveButton("Exit",new DialogInterface.OnClickListener() {
+            alert.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     System.exit(0);
                 }
             });
-            //alert.create().show();
+            alert.create().show();
         }
         sensorManager.registerListener((SensorEventListener) this, pS, sensorManager.SENSOR_DELAY_FASTEST );
 
@@ -89,7 +90,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                 if(CalculatedPressure == 0) {
                     AlertDialog.Builder alertDlg = new AlertDialog.Builder(MainActivity.this);
                     alertDlg.setCancelable(true);
-                    alertDlg.setMessage("Pressure is being calculated, please keep the phone stable and wait...");
+                    alertDlg.setMessage(R.string.wait);
                     alertDlg.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -111,7 +112,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                 TextView compareValue = (TextView)findViewById(R.id.compareValue);
                 CurrentCompare = CalculatedPressure;
 
-                if(CurrentCompare == 0) compareValue.setText("Average Value is being calculated, please wait!");
+                if(CurrentCompare == 0) compareValue.setText(R.string.wait);
                 else {
                     //If there is a string in input field, it will be updated next to the Compare Value. If there is none, it just update the compare value
                     String inputTxt = input.getText().toString();
@@ -120,7 +121,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
                     if (inputTxt.matches(""))
                         compareValue.setText(compareS[0] + ": " + CurrentCompare);
                     else
-                        compareValue.setText("Compare Value (" + input.getText() + ") : " + CurrentCompare);
+                        compareValue.setText(getText(R.string.comparevalue) + " (" + input.getText() + ") : " + CurrentCompare);
                     updateCompare();
                     input.setText("");
                 }
@@ -211,16 +212,16 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
     public void createExitMsgBox()
     {
         AlertDialog.Builder alertDlg = new AlertDialog.Builder(this);
-        alertDlg.setMessage("Oletko varma että haluat sulkea sovelluksen?");
+        alertDlg.setMessage(R.string.quit);
         alertDlg.setCancelable(false); // We avoid that the dialong can be cancelled, forcing the user to choose one of the options
-        alertDlg.setPositiveButton("Kyllä", new DialogInterface.OnClickListener() {
+        alertDlg.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         System.exit(0);
                     }
                 }
         );
 
-        alertDlg.setNegativeButton("Ei", new DialogInterface.OnClickListener() {
+        alertDlg.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // We do nothing
@@ -242,7 +243,8 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
             String current = currentPressure.getText().toString();
             int currentP = Integer.parseInt(current);
             int newCompare = CurrentCompare - currentP;
-            comparePressure.setText(-newCompare);
+            String newCompareS = Integer.toString(-newCompare);
+            comparePressure.setText(newCompareS);
         }
     }
 
@@ -262,7 +264,7 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         int average = Math.round((sum / calculateList.size()) * 100);
         CalculatedPressure = average;
         TextView calculatedResult = (TextView)findViewById(R.id.calculatedResult);
-        calculatedResult.setText("Calculated atmospheric pressure:   " + average + " Pa");
+        calculatedResult.setText(getText(R.string.calPressure) + " :" + CalculatedPressure + "Pa");
     }
 
     //Create new table's row function
@@ -281,7 +283,8 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         //add current pressure of the room above
         TextView currentPressure = new TextView(getApplicationContext());
         currentPressure.setGravity(Gravity.CENTER_HORIZONTAL);
-        currentPressure.setText(CalculatedPressure);
+        String cP = Integer.toString(CalculatedPressure);
+        currentPressure.setText(cP);
         row.addView(currentPressure);
 
         //compare Compare value with the room's value
@@ -289,7 +292,8 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         int diff;
         if(CurrentCompare == 0) diff = 0;
         else diff = CurrentCompare - CalculatedPressure;
-        comparePressure.setText(-diff);
+        String diffString = Integer.toString(-diff);
+        comparePressure.setText(diffString);
         row.addView(comparePressure);
 
         table.addView(row);

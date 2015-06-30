@@ -1,8 +1,21 @@
 <resources>
     <string name="app_name">Pressure</string>
 
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="idontknow">New Button</string>
     <string name="title_activity_saved_data">SavedDataActivity</string>
+    <string name="wait">Pressure is being calculated, please keep the phone stable and wait...</string>
+    <string name="noss">No barometer sensor is detected</string>
+    <string name="comparevalue">Compare Value</string>
+    <string name="quit">Do you wanna leave?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="calPressure">Calculated atmospheric pressure</string>
+    <string name="save">Save</string>
+    <string name="add">Add</string>
+    <string name="compare">Compare</string>
+    <string name="saved">Saved Tables</string>
+    <string name="clear">Clear</string>
+    <string name="room">Room</string>
+    <string name="pressure">Pressure</string>
+    <string name="diff">Difference</string>
 </resources>

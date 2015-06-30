@@ -18,7 +18,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Compare value"
+                android:text="@string/comparevalue"
                 android:id="@+id/compareValue" />
             <TableLayout
                 android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Room"
+                        android:text="@string/room"
                         android:id="@+id/textRoom"
                         android:layout_column="0" />
 
@@ -42,7 +42,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Pressure"
+                        android:text="@string/pressure"
                         android:id="@+id/textPressure"
                         android:layout_column="1"
                         android:gravity="center_horizontal" />
@@ -51,7 +51,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Difference"
+                        android:text="@string/diff"
                         android:id="@+id/textDiff"
                         android:layout_column="2" />
                 </TableRow>
@@ -72,13 +72,13 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="101dp"
-                    android:text="Compare"
+                    android:text="@string/compare"
                     android:id="@+id/compare"
                     android:layout_weight="0.27" />
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="101dp"
-                    android:text="Clear"
+                    android:text="@string/clear"
                     android:id="@+id/clearsave"
                     android:layout_weight="0.27" />
             </LinearLayout>

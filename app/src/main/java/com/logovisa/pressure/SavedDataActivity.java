@@ -2,6 +2,11 @@ package com.logovisa.pressure;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.app.Service;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,16 +28,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
-public class SavedDataActivity extends Activity {
+public class SavedDataActivity extends Activity implements SensorEventListener{
     public int id = 0;
     public List idList = new ArrayList();
     MainActivity main = new MainActivity();
-    int CurrentPressure = main.CurrentPressure;
-    int CurrentCompare = main.CurrentCompare;
-    int CalculatedPressure = main.CalculatedPressure;
+    public ArrayList<Float> calculateList = new ArrayList<>();
+    int CalculatedPressure;
+    int CurrentCompare = 0;
+    public SensorManager sensorManager;
+    public Sensor pS;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +64,7 @@ public class SavedDataActivity extends Activity {
                 roomP.setGravity(Gravity.CENTER_HORIZONTAL);
                 TextView compareP = new TextView(this);
                 TextView Date = new TextView(this);
+                //Skip a row if string is a date
                 if(split[i].matches("[0-9]{2}\\/[0-9]{2}\\/[0-9]{4}")){
                     Date.setText(split[i]);
                     row.addView(Date);
@@ -73,6 +82,14 @@ public class SavedDataActivity extends Activity {
                 table.addView(row);
             }
         }
+
+        //Get the reference to the sensor manager
+        sensorManager = (SensorManager) getSystemService(Service.SENSOR_SERVICE);
+
+        // Look for barometer sensor
+        pS = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        sensorManager.registerListener((SensorEventListener) this, pS, sensorManager.SENSOR_DELAY_FASTEST );
+
         //Clear button handling
         final Button clear = (Button)findViewById(R.id.clearsave);
         clear.setOnClickListener(new View.OnClickListener() {
@@ -99,7 +116,7 @@ public class SavedDataActivity extends Activity {
                 TextView compareValue = (TextView)findViewById(R.id.compareValue);
                 CurrentCompare = CalculatedPressure;
 
-                if(CurrentCompare == 0) compareValue.setText("Average Value is being calculated, please wait!");
+                if(CurrentCompare == 0) compareValue.setText(R.string.wait);
                 else {
                     //If there is a string in input field, it will be updated next to the Compare Value. If there is none, it just update the compare value
                     String inputTxt = input.getText().toString();
@@ -108,7 +125,7 @@ public class SavedDataActivity extends Activity {
                     if (inputTxt.matches(""))
                         compareValue.setText(compareS[0] + ": " + CurrentCompare);
                     else
-                        compareValue.setText("Compare Value (" + input.getText() + ") : " + CurrentCompare);
+                        compareValue.setText(getText(R.string.comparevalue) + " (" + input.getText() + ") : " + CurrentCompare);
                     updateCompare();
                     input.setText("");
                 }
@@ -116,6 +133,20 @@ public class SavedDataActivity extends Activity {
         });
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        float[] values = event.values;
+        calculateList.add(values[0]);
+        if(calculateList.size() == 50){
+            calculateAverage(calculateList);
+            calculateList.clear();
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
 
     @Override
     protected void onResume() {
@@ -162,9 +193,30 @@ public class SavedDataActivity extends Activity {
             TextView comparePressure = (TextView)row.getChildAt(2);
             TextView currentPressure = (TextView)row.getChildAt(1);
             String current = currentPressure.getText().toString();
+            if(!current.equals(" ")){
             int currentP = Integer.parseInt(current);
             int newCompare = CurrentCompare - currentP;
-            comparePressure.setText(-newCompare);
+            String newCompareS = Integer.toString(-newCompare);
+            comparePressure.setText(newCompareS);
+            }
         }
+    }
+
+    //Calculate average pressure value over a period of time
+    void calculateAverage(ArrayList<Float> calculateList){
+        float sum = 0;
+        Collections.sort(calculateList);
+        for(int i=0; i <= 9; i++){
+            calculateList.remove(i);
+        }
+        for(int i=29; 30 == calculateList.size(); i++){
+            calculateList.remove(i);
+        }
+        for(int i = 0; i < calculateList.size(); i++){
+            sum += calculateList.get(i);
+        }
+        int average = Math.round((sum / calculateList.size()) * 100);
+        CalculatedPressure = average;
+        Log.d("Main",Integer.toString(average));
     }
 }
