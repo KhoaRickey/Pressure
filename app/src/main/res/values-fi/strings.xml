@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Pressure</string>
+
+    <string name="action_settings">Asetukset</string>
+    <string name="title_activity_saved_data">Tallennettu tulos</string>
+    <string name="wait">Painetta lasketaan, pidä puhelin paikallaan ja odota...</string> 
+    <string name="noss">Paineanturia ei tunnistettu</string>
+    <string name="comparevalue">Vertailuarvo</string>
+    <string name="quit">Oletko varma että haluat sulkea sovelluksen?</string>
+    <string name="yes">Kyllä</string>
+    <string name="no">Ei</string>
+    <string name="calPressure">Laskettu paineen arvo</string>
+    <string name="save">Tallentaa</string>
+    <string name="add">Lisää</string>
+    <string name="compare">Vertaile</string>
+    <string name="saved">Tallennetut taulukot</string>
+    <string name="clear">Tyjennä</string>
+    <string name="room">Huone</string>
+    <string name="pressure">Paine</string>
+    <string name="diff">Erotus</string>
+</resources>
